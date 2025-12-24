@@ -12,16 +12,9 @@ export enum ReaderMode {
 export enum InputType {
   PASTE = 'PASTE',
   FILE = 'FILE',
-  AI = 'AI',
 }
 
 export interface ReaderSettings {
   wpm: number;
   chunkSize: number; // For future support of multi-word RSVP
-}
-
-export interface AIState {
-  isLoading: boolean;
-  error: string | null;
-  generatedContent: string | null;
 }

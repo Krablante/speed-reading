@@ -80,7 +80,7 @@ const App: React.FC = () => {
                  Master the Art of Speed Reading
                </h2>
                <p className="text-lg text-gray-500 dark:text-gray-400">
-                 Read documents, books, and articles 3x faster with our RSVP engine. Paste text, upload files, or ask AI to generate content for you.
+                 Read documents, books, and articles 3x faster with our RSVP engine. Paste text or upload files.
                </p>
              </div>
              <InputManager onStartReading={handleStartReading} />
@@ -134,7 +134,7 @@ const App: React.FC = () => {
 
       {/* Footer */}
       <footer className="w-full text-center py-6 text-sm text-gray-400 dark:text-gray-600">
-        <p>&copy; {new Date().getFullYear()} ZenReader. Built with React & Gemini.</p>
+        <p>&copy; {new Date().getFullYear()} ZenReader. Built with React.</p>
       </footer>
     </div>
   );
