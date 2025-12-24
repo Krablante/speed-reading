@@ -15,13 +15,44 @@ const InputManager: React.FC<InputManagerProps> = ({ onStartReading }) => {
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.type === "text/plain") {
+      // Allow text/plain or .txt extension to be more permissible with file types
+      const isTextFile = file.type === "text/plain" || file.name.toLowerCase().endsWith('.txt');
+
+      if (isTextFile) {
         const reader = new FileReader();
         reader.onload = (event) => {
-          const content = event.target?.result as string;
+          const buffer = event.target?.result as ArrayBuffer;
+          let content = "";
+          
+          // Encoding detection heuristic:
+          // 1. Try UTF-8 with fatal: true. This throws error if invalid byte sequences are found.
+          // 2. If it throws, it's likely a legacy encoding. Try Windows-1251 (standard for Russian).
+          // 3. If all else fails, fallback to loose UTF-8 (replaces errors with ).
+          
+          try {
+            const decoder = new TextDecoder("utf-8", { fatal: true });
+            content = decoder.decode(buffer);
+          } catch (e) {
+            try {
+               // Fallback for Cyrillic/Legacy files
+               const decoder = new TextDecoder("windows-1251", { fatal: true });
+               content = decoder.decode(buffer);
+            } catch (e2) {
+               // Final fallback
+               const decoder = new TextDecoder("utf-8");
+               content = decoder.decode(buffer);
+            }
+          }
+          
           onStartReading(content);
         };
-        reader.readAsText(file);
+        
+        reader.onerror = () => {
+          alert("Error reading file");
+        };
+
+        // Read as ArrayBuffer to allow manual decoding
+        reader.readAsArrayBuffer(file);
       } else {
         alert("Please upload a valid .txt file");
       }
